@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link href="css/bootstrap.min.css" rel="stylesheet" />
+		<style>
+			.bjimg{
+				background: url(img/buy.png) no-repeat;
+				padding-left: 50px;
+				color: #fff;
+			}
+			
+			tr:nth-child(odd) {
+				background-color: #f6f7f9;
+			}
+			tr:hover{
+				background-color: #e9f9ca;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container" style="width: 100%;" id="vm">
+			<div class="row">
+				<div class="col-lg-12"  style="background-color: #5691d4;">
+					<div class="col-lg-3" style="padding-bottom: 10px;">
+						<h3 class="bjimg">超市订单管理系统</h3>
+					</div>
+					<div class="col-lg-3 pull-right" style="color: #fff;font-size: 18px;padding-top: 17px;">
+						下午好！<span style="color: #d5ec1b;">系统管理员</span>，欢迎您！<input type="button" value="退出" style="background-color: green;"/>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="col-lg-2">
+						<ul class="list-group text-center">
+						  <li type="button" class="list-group-item" style="font-size: 20px;color: #fff; background-color: #60b3e7;">功能列表</li>
+						  <li type="button" class="list-group-item"><img src="img/zd.png"/>订单管理</li>
+						  <li type="button" class="list-group-item"><img src="img/gys.png"/>供应商管理</li>
+						  <li type="button" class="list-group-item"><img src="img/yh.png"/>用户管理</li>
+						  <li type="button" class="list-group-item"><img src="img/mm.png"/>密码修改</li>
+						  <li type="button" class="list-group-item"><img src="img/tc.png"/>退出系统</li>
+						</ul>
+					</div>
+					<div class="col-lg-10">
+						<div class="col-lg-12" style="background-color:#f6fafd;border: 1px solid #e6eaf6;line-height: 50px;font-weight: bold;">
+							<img src="img/home.png"/>你现在所在的位置是：<span style="color: #2179a9;">供应商管理页面</span>
+						</div>
+						<div class="col-lg-12" style="background-color:#f6fafd;padding:10px 30px;border-radius: 5px;">
+							供应商编码：<input type="text"  v-model="bianhao"/>供应商名称：<input type="text"  v-model="name"/>
+							<button style="background-color: #87c212;padding: 5px 20px;color:#fff;border-radius: 5px;" @click="topage(1,2)"><img src="img/search.png"/>查询</button>
+							<button   style="padding: 4px 7px;border-radius: 5px;background-color: #47acf1;margin-left: 200px;" data-toggle="modal" data-target="#mydialog" type="button">
+								<img src="img/tianjia.png"/>添加供应商
+							</button>
+						</div>
+						<div class="col-lg-12">
+							<table class="table" style="text-align: center;">
+								<tr style="font-weight: bold;">
+									<td>供应商编码</td>
+									<td>供应商名称</td>
+									<td>联系人</td>
+									<td>练习电话</td>
+									<td>传真</td>
+									<td>创建时间</td>
+									<td>操作</td>
+								</tr>
+								
+								<tr v-for="(temp,i) in pageinfo.list">
+									<td v-text="temp.bianhao"></td>
+									<td v-text="temp.name"></td>
+									<td v-text="temp.lianxiren"></td>
+									<td v-text="temp.phone"></td>
+									<td v-text="temp.chuanzhen"></td>
+									<td v-text="temp.shijian"></td>
+									<td><img src="img/read.png"/><img src="img/xiugai.png" @click="xiu(temp.id)"/><img src="img/schu.png" @click="deletes(temp.id)"/></td>
+								</tr>
+								
+								
+								
+							</table>
+							
+							<div class="text-center">
+								<button class="label label-default" @click="topage(pageinfo.firstPage,pageinfo.pageSize)">第一条</button>
+								<button class="label label-primary" v-if="pageinfo.hasPreviousPage" @click="topage(pageinfo.prePage,pageinfo.pageSize)">上一条</button>
+								<button class="label label-success" @click="topage(pageinfo.nextPage,pageinfo.pageSize)">下一条</button>
+								<button class="label label-info" @click="topage(pageinfo.lastPage,pageinfo.pageSize)">最后一条</button>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		<div id="mydialog" class="modal fade" data-backdrop="static">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title">新增供应商</h4>
+		      </div>
+		      <div class="modal-body">
+		        
+		      </div>
+		      
+		    </div><!-- /.modal-content -->
+		  </div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+		
+	</body>
+	<script type="text/javascript" src="js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/dialog.js"></script>
+	<!--ajax引擎-->
+	<script type="text/javascript" src="js/axios.min.js"></script>
+	<script type="text/javascript" src="js/axios_cfg.js"></script>
+	<script type="text/javascript" src="js/vue.js"></script>
+	
+	<script>
+		//绑定事件
+		$("#mydialog").on('show.bs.modal',function(e){
+			$(".modal-body").load("xinz.html");
+		});
+		
+		var vm = new Vue({
+			el:"#vm",
+			data:{
+				pageinfo:{},
+				bianhao:"",
+				name:""
+				
+				
+			},mounted(){
+				
+				this.topage(1,2)
+			},methods:{
+				topage(p,s){
+					var Newbianhao="-1";
+					var Newname="-1";
+					if(this.bianhao!=""){
+						Newbianhao=this.bianhao;
+					}
+					if(this.name!=""){
+						Newname=this.name;
+					}
+					let _this = this;
+					axios.get(`http://127.0.0.1:8080/Svue1/api/student/${p}/${s}/${Newbianhao}/${Newname}`).then(function(resp){
+						_this.pageinfo = resp.data;
+					}).catch(function(e){
+						console.info(e)
+					})
+				},
+				//删除
+				deletes(id){
+					let _this=this;
+					if(window.confirm('是否移除?')){
+						axios.delete(`http://127.0.0.1:8080/Svue1/api/student/shan/${id}`).then(function(resp){
+							if(resp.data>0){
+								showAlertDialog('移除成功');
+								_this.topage(1,2);
+							}
+						})
+					}
+				},
+				xiu(id){
+					sessionStorage.setItem("id", id);
+					showWindowDialog('xiu.html', '修改信息');
+				}
+			}
+		})
+	</script>
+</html>
